@@ -35,6 +35,7 @@ FlightMates connects people travelling on the same flight or journey, starting w
 - Every discovery, profile, request and message path must apply the block check in both directions and the filters in PRD Section 13.1.
 - Never log message bodies, emails, DOB, tokens, or flight details tied to a user. Log IDs.
 - Never commit secrets. Use `.env.example` with placeholder values.
+- Every environment variable is declared in `packages/config/src/env.ts` (validated at server start) and listed in `.env.example`. Read it through `serverEnv()` in `apps/web/src/env.ts`, not `process.env`. Errors name variables, never values.
 - Strip EXIF from uploaded images.
 
 ## UI

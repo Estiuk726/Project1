@@ -8,26 +8,26 @@ Inspiration: founder-provided references combining (1) a navy flight-booking app
 
 ### Color
 
-| Token | Value | Use |
-|---|---|---|
-| `navy-900` | `#161B4B` | Headers, primary text, secondary buttons |
-| `navy-700` | `#2A3170` | Chips on navy, avatar fallback |
-| `navy-500` | `#3A428A` | Borders on navy |
-| `indigo-600` | `#3441B5` | Primary buttons, active tab, selected chips, own message bubbles |
-| `indigo-800` | `#232E8C` | Link hover, text on indigo tint |
-| `indigo-300` | `#A9AFEA` | Dotted route lines, dashed photo slot |
-| `indigo-100` | `#E3E4FA` | Info banners |
-| `indigo-50` | `#E8E9FB` | Small tags |
-| `lavender-bg` | `#EEEDFA` | App background |
-| `field-bg` | `#F4F4FA` | Input fields |
-| `chip-bg` | `#F0F0F8` | Secondary pill buttons |
-| `white` | `#FFFFFF` | Cards |
-| `text-muted` | `#5B6080` | Captions, labels (≥ 4.5:1 on white and lavender) |
-| `on-navy-muted` | `#C3C7F0` | Captions on navy |
-| `divider` | `#E3E4F2` | Dashed ticket dividers |
-| `success-bg` / `success-fg` | `#E3F5E8` / `#1E6B37` | Match tags ("On QR 79") |
-| `accent-orange` | `#F26A3D` | Unread dots and notification badges only |
-| `peach-glow` | `rgba(246,176,148,0.55)` | Radial glow in sky gradients |
+| Token                       | Value                    | Use                                                              |
+| --------------------------- | ------------------------ | ---------------------------------------------------------------- |
+| `navy-900`                  | `#161B4B`                | Headers, primary text, secondary buttons                         |
+| `navy-700`                  | `#2A3170`                | Chips on navy, avatar fallback                                   |
+| `navy-500`                  | `#3A428A`                | Borders on navy                                                  |
+| `indigo-600`                | `#3441B5`                | Primary buttons, active tab, selected chips, own message bubbles |
+| `indigo-800`                | `#232E8C`                | Link hover, text on indigo tint                                  |
+| `indigo-300`                | `#A9AFEA`                | Dotted route lines, dashed photo slot                            |
+| `indigo-100`                | `#E3E4FA`                | Info banners                                                     |
+| `indigo-50`                 | `#E8E9FB`                | Small tags                                                       |
+| `lavender-bg`               | `#EEEDFA`                | App background                                                   |
+| `field-bg`                  | `#F4F4FA`                | Input fields                                                     |
+| `chip-bg`                   | `#F0F0F8`                | Secondary pill buttons                                           |
+| `white`                     | `#FFFFFF`                | Cards                                                            |
+| `text-muted`                | `#5B6080`                | Captions, labels (≥ 4.5:1 on white and lavender)                 |
+| `on-navy-muted`             | `#C3C7F0`                | Captions on navy                                                 |
+| `divider`                   | `#E3E4F2`                | Dashed ticket dividers                                           |
+| `success-bg` / `success-fg` | `#E3F5E8` / `#1E6B37`    | Match tags ("On QR 79")                                          |
+| `accent-orange`             | `#F26A3D`                | Unread dots and notification badges only                         |
+| `peach-glow`                | `rgba(246,176,148,0.55)` | Radial glow in sky gradients                                     |
 
 ### Gradients
 
@@ -54,21 +54,21 @@ Inspiration: founder-provided references combining (1) a navy flight-booking app
 
 ## Components
 
-| Component | Spec |
-|---|---|
-| Primary button | 56 px pill, `indigo-600`, white 16/700 |
-| Secondary button | 44–52 px pill, `navy-900`, white 14–15/700 |
-| Tertiary button | 44–48 px pill, `chip-bg`, navy 14/700 |
-| Icon button | 44 px circle, white on light, glass on sky, `aria-label` required |
-| Field | `field-bg`, radius 16–18, caption label on top, value 16–18/700–800 |
-| Filter pill | 40 px, selected `indigo-600`/white, unselected white/navy (or `navy-700` on navy) |
-| Ticket card | White, radius 24, dashed `divider` line with 20 px notches in the background color at both ends |
-| Flight route | `DAC ····✈···· BER`, codes 26–34/800, city captions, hub as small tag |
-| Traveller card | Ticket card: avatar 48, name 16/800, "Country · Purpose", success tag right; lower half reason line + "Say hi" |
-| Tab bar | Floating pill 68 px high, 24 px from edges and bottom, 3 items: Trips, Chats, Me |
-| Composer | Floating pill with field and 52 px send circle |
-| Glass action bar | On sky screens: circle, white pill primary, circle |
-| Info banner | `indigo-100` with icon, 13/1.45 `indigo-800` text |
+| Component        | Spec                                                                                                           |
+| ---------------- | -------------------------------------------------------------------------------------------------------------- |
+| Primary button   | 56 px pill, `indigo-600`, white 16/700                                                                         |
+| Secondary button | 44–52 px pill, `navy-900`, white 14–15/700                                                                     |
+| Tertiary button  | 44–48 px pill, `chip-bg`, navy 14/700                                                                          |
+| Icon button      | 44 px circle, white on light, glass on sky, `aria-label` required                                              |
+| Field            | `field-bg`, radius 16–18, caption label on top, value 16–18/700–800                                            |
+| Filter pill      | 40 px, selected `indigo-600`/white, unselected white/navy (or `navy-700` on navy)                              |
+| Ticket card      | White, radius 24, dashed `divider` line with 20 px notches in the background color at both ends                |
+| Flight route     | `DAC ····✈···· BER`, codes 26–34/800, city captions, hub as small tag                                          |
+| Traveller card   | Ticket card: avatar 48, name 16/800, "Country · Purpose", success tag right; lower half reason line + "Say hi" |
+| Tab bar          | Floating pill 68 px high, 24 px from edges and bottom, 3 items: Trips, Chats, Me                               |
+| Composer         | Floating pill with field and 52 px send circle                                                                 |
+| Glass action bar | On sky screens: circle, white pill primary, circle                                                             |
+| Info banner      | `indigo-100` with icon, 13/1.45 `indigo-800` text                                                              |
 
 ## Rules
 

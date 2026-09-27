@@ -16,32 +16,32 @@ Labels used in this document:
 
 ### 0.1 v0.2 → v0.3
 
-| Change | Why | Section |
-|---|---|---|
-| Launch market is South Asia → Europe (BD, IN, PK, NP, LK to any European airport), not one Dhaka → Budapest route | Founder decision D1. Students from several origins converge on the same Gulf/Istanbul hub legs, which is where density comes from | 4, 5.1, 5.6 |
-| Density gate measured per origin country | A strong country must not hide an empty one | 5.6 |
-| Discovery tiers reduced from 5 to 3 user-facing sections | Simpler to explain and build: "On your flights", "Same route", "To {city}" | 5.3, 9.5, 13 |
-| One visibility switch per trip ("Show me to other travellers") replaces separate flight and wider-matching toggles | Simpler flow; one decision for the user | 8.4, 10.2, 15 |
-| University verification and tier moved from P0 to P1 | Europe-wide university list is large; not needed to prove the core loop | 6, 9.2, 10.1 |
-| Requests live inside the Chats tab; app has 3 tabs (Trips, Chats, Me) | Fewer screens | 7 |
-| Email verification uses a 6-digit code | Easier on mobile than a link | 9.1 |
-| UI direction defined, 7-screen core flow | Founder-provided references | 7, 24, `docs/ux/design-system.md` |
+| Change                                                                                                             | Why                                                                                                                               | Section                           |
+| ------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| Launch market is South Asia → Europe (BD, IN, PK, NP, LK to any European airport), not one Dhaka → Budapest route  | Founder decision D1. Students from several origins converge on the same Gulf/Istanbul hub legs, which is where density comes from | 4, 5.1, 5.6                       |
+| Density gate measured per origin country                                                                           | A strong country must not hide an empty one                                                                                       | 5.6                               |
+| Discovery tiers reduced from 5 to 3 user-facing sections                                                           | Simpler to explain and build: "On your flights", "Same route", "To {city}"                                                        | 5.3, 9.5, 13                      |
+| One visibility switch per trip ("Show me to other travellers") replaces separate flight and wider-matching toggles | Simpler flow; one decision for the user                                                                                           | 8.4, 10.2, 15                     |
+| University verification and tier moved from P0 to P1                                                               | Europe-wide university list is large; not needed to prove the core loop                                                           | 6, 9.2, 10.1                      |
+| Requests live inside the Chats tab; app has 3 tabs (Trips, Chats, Me)                                              | Fewer screens                                                                                                                     | 7                                 |
+| Email verification uses a 6-digit code                                                                             | Easier on mobile than a link                                                                                                      | 9.1                               |
+| UI direction defined, 7-screen core flow                                                                           | Founder-provided references                                                                                                       | 7, 24, `docs/ux/design-system.md` |
 
 ### 0.2 v0.1 → v0.2
 
-| v0.1 issue | Fix in v0.2 | Section |
-|---|---|---|
-| Cold start: empty flights at launch | Launch market, fallback discovery tiers, zero-match state, flight invite links, density gate before public launch | 5, 13 |
-| "Verified users" promised but verification TBD; anyone can add any flight | Verification levels, flight-add limits, badges, request permissions tied to verification | 10 |
-| Safety defaults undecided | 18+ only, per-trip visibility, fixed public profile fields, request controls, meetup guidance, moderation SLA, auto-restrictions | 10 |
-| Overview and PRD disagreed (age, location, university, import, meetups) | One reconciled field list and feature list | 7, 9.2, 6 |
-| Flight data: no provider, three adapters, UTC-only dates | Evaluation criteria, one adapter, local-date identity key, manual fallback, disruption handling | 12 |
-| Scope too large for a first build | Thin vertical slice first, managed services, one deployable app, reduced P0 | 6, 14, 20 |
-| No push plan | PWA web push in P0, native apps later | 9.8 |
-| D7/D30 retention wrong for infrequent flyers | Journey-level retention and pre-flight engagement metrics | 18 |
-| Missing state machines, screens, limits, cancelled-flight behavior | Added | 7, 8, 12.6, 17 |
-| Spec not usable by Claude Code as a PDF | Markdown in repo, CLAUDE.md, BUILD_PLAN.md with small tickets | 20, repo root |
-| GDPR left to "before launch" | Moved to Phase 0 because it shapes the schema; retention table added | 11 |
+| v0.1 issue                                                                | Fix in v0.2                                                                                                                      | Section        |
+| ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| Cold start: empty flights at launch                                       | Launch market, fallback discovery tiers, zero-match state, flight invite links, density gate before public launch                | 5, 13          |
+| "Verified users" promised but verification TBD; anyone can add any flight | Verification levels, flight-add limits, badges, request permissions tied to verification                                         | 10             |
+| Safety defaults undecided                                                 | 18+ only, per-trip visibility, fixed public profile fields, request controls, meetup guidance, moderation SLA, auto-restrictions | 10             |
+| Overview and PRD disagreed (age, location, university, import, meetups)   | One reconciled field list and feature list                                                                                       | 7, 9.2, 6      |
+| Flight data: no provider, three adapters, UTC-only dates                  | Evaluation criteria, one adapter, local-date identity key, manual fallback, disruption handling                                  | 12             |
+| Scope too large for a first build                                         | Thin vertical slice first, managed services, one deployable app, reduced P0                                                      | 6, 14, 20      |
+| No push plan                                                              | PWA web push in P0, native apps later                                                                                            | 9.8            |
+| D7/D30 retention wrong for infrequent flyers                              | Journey-level retention and pre-flight engagement metrics                                                                        | 18             |
+| Missing state machines, screens, limits, cancelled-flight behavior        | Added                                                                                                                            | 7, 8, 12.6, 17 |
+| Spec not usable by Claude Code as a PDF                                   | Markdown in repo, CLAUDE.md, BUILD_PLAN.md with small tickets                                                                    | 20, repo root  |
+| GDPR left to "before launch"                                              | Moved to Phase 0 because it shapes the schema; retention table added                                                             | 11             |
 
 ---
 
@@ -116,11 +116,11 @@ The market is configuration, not code: a `launch_markets` table lists enabled co
 
 Discovery for a trip shows three sections. Each result carries a reason label.
 
-| # | Section title | Who appears | Internal tier |
-|---|---|---|---|
-| 1 | "On your flights" | Same flight instance as any segment of the viewer's trip | `same_flight` |
-| 2 | "Same route" | Same origin and destination airport on any segment, departing within ±3 days (local date), not already in section 1 | `same_route` |
-| 3 | "To {final destination city}" | Same final destination city, arriving within ±7 days, not already in sections 1 or 2 | `same_destination` |
+| #   | Section title                 | Who appears                                                                                                         | Internal tier      |
+| --- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------- | ------------------ |
+| 1   | "On your flights"             | Same flight instance as any segment of the viewer's trip                                                            | `same_flight`      |
+| 2   | "Same route"                  | Same origin and destination airport on any segment, departing within ±3 days (local date), not already in section 1 | `same_route`       |
+| 3   | "To {final destination city}" | Same final destination city, arriving within ±7 days, not already in sections 1 or 2                                | `same_destination` |
 
 - Only travellers whose trip visibility is on (10.2) appear in any section.
 - The university section from v0.2 is P1 (Section 6).
@@ -191,15 +191,15 @@ Public launch in an origin country requires, during closed beta for that country
 
 The whole MVP is 7 screens. The reference design is the FlightMates Core Flow canvas; tokens and components are in `docs/ux/design-system.md`.
 
-| # | Screen | What happens |
-|---|---|---|
-| 1 | Create account | First name, email, date of birth, password. Under 18 is refused. A 6-digit code is emailed to confirm. |
-| 2 | Your profile | Photo, home country, languages. Nothing else required. |
-| 3 | Add your trip | Flight number + date → flight card appears. Optional connecting flight(s). One switch: "Show me to other travellers" (default on). |
-| 4 | Who's travelling | Trip header with route. Filter pills for the 3 sections with counts. People as ticket cards with reason labels. |
-| 5 | Say hi | Traveller profile, why you see them, optional note (150 chars), Say hi. Block and Report on the same screen. |
-| 6 | Chats | Incoming requests at the top with Accept / Not now. Conversations below, each labelled with its flight. |
-| 7 | Chat | Text messages, one-time meeting-safety tip, report/block in the menu. |
+| #   | Screen           | What happens                                                                                                                       |
+| --- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Create account   | First name, email, date of birth, password. Under 18 is refused. A 6-digit code is emailed to confirm.                             |
+| 2   | Your profile     | Photo, home country, languages. Nothing else required.                                                                             |
+| 3   | Add your trip    | Flight number + date → flight card appears. Optional connecting flight(s). One switch: "Show me to other travellers" (default on). |
+| 4   | Who's travelling | Trip header with route. Filter pills for the 3 sections with counts. People as ticket cards with reason labels.                    |
+| 5   | Say hi           | Traveller profile, why you see them, optional note (150 chars), Say hi. Block and Report on the same screen.                       |
+| 6   | Chats            | Incoming requests at the top with Accept / Not now. Conversations below, each labelled with its flight.                            |
+| 7   | Chat             | Text messages, one-time meeting-safety tip, report/block in the menu.                                                              |
 
 Navigation: 3 tabs, **Trips, Chats, Me**. A bell in the header opens the in-app notification list. Push notifications deep-link to the request or conversation.
 
@@ -291,18 +291,18 @@ any     ──block───▶ cancelled (by system)
 
 ### 9.2 Profile fields (Decided: this is the reconciled list)
 
-| Field | Required | Visible to other travelers before connecting | Notes |
-|---|---|---|---|
-| First name (display name) | Yes | Yes | No surname field in MVP |
-| Photo | Yes to send requests | Yes | EXIF stripped, see 10.6 |
-| Age | Derived from DOB | Optional, off by default | Shown as number if on |
-| Home country | Yes | Yes | Country only, never city |
-| Languages | Yes, 1+ | Yes | From list |
-| Interests | No, up to 5 | Yes | From fixed list, no free text |
-| Bio | No, max 300 chars | Yes | Moderated by report |
-| University (P1) | No | Only if verified and toggled on | From university email |
-| Travel purpose | Per journey | Yes | Study, work, holiday, visiting family, returning home, other |
-| Final destination city | Per journey | Yes when the trip is visible | Needed for section 3 |
+| Field                     | Required             | Visible to other travelers before connecting | Notes                                                        |
+| ------------------------- | -------------------- | -------------------------------------------- | ------------------------------------------------------------ |
+| First name (display name) | Yes                  | Yes                                          | No surname field in MVP                                      |
+| Photo                     | Yes to send requests | Yes                                          | EXIF stripped, see 10.6                                      |
+| Age                       | Derived from DOB     | Optional, off by default                     | Shown as number if on                                        |
+| Home country              | Yes                  | Yes                                          | Country only, never city                                     |
+| Languages                 | Yes, 1+              | Yes                                          | From list                                                    |
+| Interests                 | No, up to 5          | Yes                                          | From fixed list, no free text                                |
+| Bio                       | No, max 300 chars    | Yes                                          | Moderated by report                                          |
+| University (P1)           | No                   | Only if verified and toggled on              | From university email                                        |
+| Travel purpose            | Per journey          | Yes                                          | Study, work, holiday, visiting family, returning home, other |
+| Final destination city    | Per journey          | Yes when the trip is visible                 | Needed for section 3                                         |
 
 Never shown to other users: email, phone, DOB, surname, home city, other flights or segments not shared in the current context, seat number (never collected), social links (not supported in MVP).
 
@@ -359,11 +359,11 @@ Not collected in MVP: gender, religion, ethnicity, phone number.
 
 ### 10.1 Verification levels (Decided)
 
-| Level | How | Badge | Unlocks |
-|---|---|---|---|
-| Email verified (P0) | 6-digit code in email | none | Appear in discovery, send requests |
-| University verified (P1) | Code sent to a university email domain from the `universities` table | "Verified student, {university}" | University field, "Same university" section |
-| Flight verified (P1) | Scan boarding pass barcode (IATA BCBP) in the app; name and flight must match the claimed flight | "Boarding pass verified" | Badge on that flight |
+| Level                    | How                                                                                              | Badge                            | Unlocks                                     |
+| ------------------------ | ------------------------------------------------------------------------------------------------ | -------------------------------- | ------------------------------------------- |
+| Email verified (P0)      | 6-digit code in email                                                                            | none                             | Appear in discovery, send requests          |
+| University verified (P1) | Code sent to a university email domain from the `universities` table                             | "Verified student, {university}" | University field, "Same university" section |
+| Flight verified (P1)     | Scan boarding pass barcode (IATA BCBP) in the app; name and flight must match the claimed flight | "Boarding pass verified"         | Badge on that flight                        |
 
 Rules:
 
@@ -435,16 +435,16 @@ Only fields in 9.2 plus DOB, email, and flight data. No special category fields 
 
 ### 11.3 Retention (Proposed defaults)
 
-| Data | Retention |
-|---|---|
-| Account and profile | Until deletion, then hard deleted within 30 days |
-| Messages | Until either participant deletes their account; then removed for both after 30 days, except messages attached to an open moderation case |
-| Flight participation | 12 months after the flight, then anonymized for analytics |
-| Reports and moderation actions | 2 years after case closure |
-| Admin audit log | 5 years |
-| Analytics events | Pseudonymous, 25 months |
-| Security logs | 90 days |
-| Boarding pass scans | Not stored; only match result |
+| Data                           | Retention                                                                                                                                |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Account and profile            | Until deletion, then hard deleted within 30 days                                                                                         |
+| Messages                       | Until either participant deletes their account; then removed for both after 30 days, except messages attached to an open moderation case |
+| Flight participation           | 12 months after the flight, then anonymized for analytics                                                                                |
+| Reports and moderation actions | 2 years after case closure                                                                                                               |
+| Admin audit log                | 5 years                                                                                                                                  |
+| Analytics events               | Pseudonymous, 25 months                                                                                                                  |
+| Security logs                  | 90 days                                                                                                                                  |
+| Boarding pass scans            | Not stored; only match result                                                                                                            |
 
 ---
 
@@ -514,16 +514,16 @@ A candidate is shown only if all are true:
 
 Section order first (5.3). Within a section, score:
 
-| Signal | Points |
-|---|---|
-| Shares another segment of the journey too | +30 |
-| Same final destination city | +20 |
-| Same home country | +10 |
-| Each shared language (max 2) | +10 |
-| Each shared interest (max 3) | +5 |
-| Same travel purpose | +5 |
-| Verified badge (any, P1) | +5 |
-| Profile complete (photo, bio, 3+ interests) | +5 |
+| Signal                                      | Points |
+| ------------------------------------------- | ------ |
+| Shares another segment of the journey too   | +30    |
+| Same final destination city                 | +20    |
+| Same home country                           | +10    |
+| Each shared language (max 2)                | +10    |
+| Each shared interest (max 3)                | +5     |
+| Same travel purpose                         | +5     |
+| Verified badge (any, P1)                    | +5     |
+| Profile complete (photo, bio, 3+ interests) | +5     |
 
 Reason labels come from the top 2 contributing signals ("Also going to Berlin", "Speaks Bengali"). The score itself is never shown.
 
@@ -537,22 +537,22 @@ Every discovery response records the ranking version in analytics so versions ca
 
 ### 14.1 Proposed stack (ADRs, confirm in Phase 0)
 
-| Concern | Proposed | Why |
-|---|---|---|
-| App | One Next.js (TypeScript) app: web UI, `/api/v1` route handlers, `/admin` routes | One deployable for a small team |
-| Domain logic | `packages/domain`, framework-free TypeScript | Testable, reusable by a future mobile app or separate API |
-| Database | Managed PostgreSQL, EU region (Supabase is the candidate) | Relational data, strong constraints |
-| ORM and migrations | Drizzle with SQL migrations in repo | Typed schema, reviewable migrations |
-| Auth | Managed auth provider behind `AuthProvider` interface (Supabase Auth is the candidate) | Avoid building password and session handling |
-| Realtime | Managed realtime service used only as a "new event" signal on private per-user channels; the client then fetches from the API | API stays the source of truth and the authorization point |
-| Jobs | Managed background job service, or a Postgres job table with a scheduled worker | Email, push, flight sync, notifications |
-| Storage | S3-compatible object storage, EU region | Profile photos |
-| Email | Transactional email provider behind `EmailProvider` | |
-| Push | Web Push (VAPID) behind `PushProvider` | PWA first |
-| Rate limiting | Serverless-friendly Redis or a Postgres-backed limiter | No self-managed Redis in MVP |
-| Analytics | Product analytics tool with EU hosting, plus `analytics_events` table for core loop events | |
-| Errors and logs | Error tracking service, structured JSON logs | |
-| Hosting | Managed hosting in an EU region | |
+| Concern            | Proposed                                                                                                                      | Why                                                       |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| App                | One Next.js (TypeScript) app: web UI, `/api/v1` route handlers, `/admin` routes                                               | One deployable for a small team                           |
+| Domain logic       | `packages/domain`, framework-free TypeScript                                                                                  | Testable, reusable by a future mobile app or separate API |
+| Database           | Managed PostgreSQL, EU region (Supabase is the candidate)                                                                     | Relational data, strong constraints                       |
+| ORM and migrations | Drizzle with SQL migrations in repo                                                                                           | Typed schema, reviewable migrations                       |
+| Auth               | Managed auth provider behind `AuthProvider` interface (Supabase Auth is the candidate)                                        | Avoid building password and session handling              |
+| Realtime           | Managed realtime service used only as a "new event" signal on private per-user channels; the client then fetches from the API | API stays the source of truth and the authorization point |
+| Jobs               | Managed background job service, or a Postgres job table with a scheduled worker                                               | Email, push, flight sync, notifications                   |
+| Storage            | S3-compatible object storage, EU region                                                                                       | Profile photos                                            |
+| Email              | Transactional email provider behind `EmailProvider`                                                                           |                                                           |
+| Push               | Web Push (VAPID) behind `PushProvider`                                                                                        | PWA first                                                 |
+| Rate limiting      | Serverless-friendly Redis or a Postgres-backed limiter                                                                        | No self-managed Redis in MVP                              |
+| Analytics          | Product analytics tool with EU hosting, plus `analytics_events` table for core loop events                                    |                                                           |
+| Errors and logs    | Error tracking service, structured JSON logs                                                                                  |                                                           |
+| Hosting            | Managed hosting in an EU region                                                                                               |                                                           |
 
 Redis, a separate API service, and a separate admin app are deferred until real load or team size requires them.
 
@@ -628,16 +628,16 @@ Idempotency: message send (client_message_id), request create (unique pending pa
 
 ## 17. Rate limits (Decided, values configurable)
 
-| Action | Limit |
-|---|---|
-| Login attempts | 10 per 15 min per IP and per account |
-| Verification codes | 5 per hour |
-| Flight lookups | 30 per hour per user |
-| Flights added | See 10.3 |
-| Requests | See 10.3 |
-| Messages | See 10.3 |
-| Reports | 20 per day |
-| Invite page views | 60 per minute per IP |
+| Action             | Limit                                |
+| ------------------ | ------------------------------------ |
+| Login attempts     | 10 per 15 min per IP and per account |
+| Verification codes | 5 per hour                           |
+| Flight lookups     | 30 per hour per user                 |
+| Flights added      | See 10.3                             |
+| Requests           | See 10.3                             |
+| Messages           | See 10.3                             |
+| Reports            | 20 per day                           |
+| Invite page views  | 60 per minute per IP                 |
 
 ---
 
@@ -719,19 +719,19 @@ Detailed tickets: `docs/BUILD_PLAN.md`.
 
 ## 22. Founder decisions
 
-| # | Decision | Status | Answer or proposed default | Needed before |
-|---|---|---|---|---|
-| D1 | Launch market | **Decided (v0.3)** | South Asia (BD, IN, PK, NP, LK) ↔ Europe (EU/EEA, UK, CH), any hub | Phase 5 |
-| D2 | Flight data provider | Open | Winner of the 12.1 evaluation | Phase 2 |
-| D3 | Auth provider | Open | Managed provider with EU data option; Supabase Auth is the candidate | Phase 1 (F-05) |
-| D4 | Hosting and database region | Open | Managed hosting and Postgres in EU region; Supabase EU is the candidate | Phase 1 (F-03) |
-| D5 | Realtime service | Open | Managed realtime as signal only | Phase 3 |
-| D6 | Age shown by default | Default | Off | Phase 2 |
-| D7 | Wider matching default | **Decided (v0.3)** | Merged into the single trip visibility switch, default on | Phase 3 |
-| D8 | Moderation rota and hours | Open | Founder plus one person, 24h target, coverage per 10.5 | Phase 5 |
-| D9 | Legal reviewer | Open | Named before real user data | Phase 0 |
-| D10 | Monetization timing | Default | None before the first origin country passes the density gate | Phase 7 |
-| D11 | First origin countries to open | Open | The two that reach 200 beta users first | Phase 5 |
+| #   | Decision                       | Status             | Answer or proposed default                                              | Needed before  |
+| --- | ------------------------------ | ------------------ | ----------------------------------------------------------------------- | -------------- |
+| D1  | Launch market                  | **Decided (v0.3)** | South Asia (BD, IN, PK, NP, LK) ↔ Europe (EU/EEA, UK, CH), any hub      | Phase 5        |
+| D2  | Flight data provider           | Open               | Winner of the 12.1 evaluation                                           | Phase 2        |
+| D3  | Auth provider                  | Open               | Managed provider with EU data option; Supabase Auth is the candidate    | Phase 1 (F-05) |
+| D4  | Hosting and database region    | Open               | Managed hosting and Postgres in EU region; Supabase EU is the candidate | Phase 1 (F-03) |
+| D5  | Realtime service               | Open               | Managed realtime as signal only                                         | Phase 3        |
+| D6  | Age shown by default           | Default            | Off                                                                     | Phase 2        |
+| D7  | Wider matching default         | **Decided (v0.3)** | Merged into the single trip visibility switch, default on               | Phase 3        |
+| D8  | Moderation rota and hours      | Open               | Founder plus one person, 24h target, coverage per 10.5                  | Phase 5        |
+| D9  | Legal reviewer                 | Open               | Named before real user data                                             | Phase 0        |
+| D10 | Monetization timing            | Default            | None before the first origin country passes the density gate            | Phase 7        |
+| D11 | First origin countries to open | Open               | The two that reach 200 beta users first                                 | Phase 5        |
 
 ---
 

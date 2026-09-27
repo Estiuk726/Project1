@@ -33,7 +33,7 @@ Claude Code can draft P0-3, P0-4 and P0-5. Ask it to list assumptions at the top
 | ID   | Status | Ticket                                                                                                                  | Acceptance                                               |
 | ---- | ------ | ----------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
 | F-01 | ✅     | Monorepo with the layout in CLAUDE.md, pnpm workspaces, TypeScript strict, lint, format                                 | `pnpm lint` and `pnpm typecheck` pass on empty packages  |
-| F-02 | 🟡     | CI pipeline: lint, typecheck, test, build. Scaffold `apps/web` as a Next.js app (open question Q5)                      | Runs on every PR, blocks merge on failure                |
+| F-02 | ✅     | CI pipeline: lint, typecheck, test, build. Scaffold `apps/web` as a Next.js app (open question Q5)                      | Runs on every PR, blocks merge on failure                |
 | F-03 | ⬜     | Postgres + Drizzle, first migration (users, user_profiles), clean-DB migration check in CI                              | Fresh DB builds from migrations in CI                    |
 | F-04 | ⬜     | Env config with validation, `.env.example`, secret handling                                                             | App refuses to start with missing env vars               |
 | F-05 | ⬜     | Auth provider integration behind `AuthProvider` port; signup with DOB and 18+ check; email verification by 6-digit code | Under-18 signup rejected (test); unverified user flagged |

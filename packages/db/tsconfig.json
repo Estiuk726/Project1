@@ -1,0 +1,4 @@
+{
+  "extends": "@flightmates/config/tsconfig.base.json",
+  "include": ["src"]
+}

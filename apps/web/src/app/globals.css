@@ -1,0 +1,36 @@
+/* Tokens from docs/ux/design-system.md */
+:root {
+  --navy-900: #161b4b;
+  --navy-700: #2a3170;
+  --indigo-600: #3441b5;
+  --indigo-800: #232e8c;
+  --indigo-300: #a9afea;
+  --lavender-bg: #eeedfa;
+  --field-bg: #f4f4fa;
+  --white: #ffffff;
+  --text-muted: #5b6080;
+  --accent-orange: #f26a3d;
+  --sky-light:
+    radial-gradient(circle at 70% 38%, rgba(246, 184, 160, 0.55), transparent 42%),
+    linear-gradient(180deg, #d3d5f7 0%, #a9afea 38%, #6a74c9 70%, #2e3a8e 100%);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--lavender-bg);
+  color: var(--navy-900);
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+a {
+  color: var(--indigo-600);
+}
+
+a:hover {
+  color: var(--indigo-800);
+}

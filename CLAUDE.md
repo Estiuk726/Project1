@@ -76,12 +76,15 @@ Requires Node 22+ and pnpm 10 (`corepack enable`).
 
 ```
 pnpm install         Install all workspace dependencies
+pnpm dev             Next.js dev server (pnpm --filter @flightmates/web dev)
 pnpm lint            ESLint across the repo
 pnpm typecheck       tsc --noEmit in every package
 pnpm format          Prettier write
 pnpm format:check    Prettier check (CI)
-pnpm test            Run tests in every package that has them
-pnpm build           Build every package that has a build step
+pnpm test            Vitest: packages/*/src/**/*.test.ts and apps/*/src/**/*.test.{ts,tsx}
+pnpm build           Build every package that has a build step (Next.js app)
 ```
 
-Added by later tickets: `pnpm dev`, `pnpm test:e2e`, `pnpm db:migrate`, `pnpm db:seed`.
+CI (`.github/workflows/ci.yml`) runs install, format:check, lint, typecheck, test and build on every PR.
+
+Added by later tickets: `pnpm test:e2e`, `pnpm db:migrate`, `pnpm db:seed`.

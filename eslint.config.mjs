@@ -1,12 +1,19 @@
 // @ts-check
 import js from '@eslint/js';
+import nextPlugin from '@next/eslint-plugin-next';
 import prettier from 'eslint-config-prettier';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   {
-    ignores: ['**/node_modules/**', '**/dist/**', '**/.next/**', '**/coverage/**'],
+    ignores: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/.next/**',
+      '**/coverage/**',
+      '**/next-env.d.ts',
+    ],
   },
   js.configs.recommended,
   ...tseslint.configs.strictTypeChecked,
@@ -22,6 +29,16 @@ export default tseslint.config(
   {
     files: ['**/*.{js,mjs,cjs}'],
     ...tseslint.configs.disableTypeChecked,
+  },
+  {
+    files: ['apps/web/**/*.{ts,tsx}'],
+    plugins: { '@next/next': nextPlugin },
+    settings: { next: { rootDir: 'apps/web/' } },
+    languageOptions: { globals: { ...globals.browser } },
+    rules: {
+      ...nextPlugin.configs.recommended.rules,
+      ...nextPlugin.configs['core-web-vitals'].rules,
+    },
   },
   {
     // CLAUDE.md: the domain stays framework- and provider-free.

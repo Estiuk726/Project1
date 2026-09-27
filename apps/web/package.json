@@ -3,13 +3,20 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "exports": {
-    ".": "./src/index.ts"
-  },
   "scripts": {
-    "typecheck": "tsc --noEmit -p tsconfig.json"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "next typegen && tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "next": "^16.3.6",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
   },
   "devDependencies": {
-    "@flightmates/config": "workspace:*"
+    "@flightmates/config": "workspace:*",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0"
   }
 }

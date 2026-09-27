@@ -17,6 +17,21 @@ jobs:
     name: Lint, typecheck, test, build
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    services:
+      postgres:
+        # Supabase runs Postgres 17 (ADR 0002).
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
     steps:
       - uses: actions/checkout@v7
 
@@ -38,6 +53,12 @@ jobs:
 
       - name: Typecheck
         run: pnpm typecheck
+
+      - name: Migration files consistent
+        run: pnpm db:check
+
+      - name: Migrations apply to a clean database
+        run: pnpm db:migrate
 
       - name: Test
         run: pnpm test

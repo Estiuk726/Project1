@@ -1,2 +1,2 @@
-// Drizzle schema, migrations and repositories. Added in F-03.
-export {};
+export * from './schema';
+export { createDatabase, type Database } from './client';

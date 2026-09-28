@@ -98,6 +98,6 @@ New tables: add them to `schema.ts`, run `pnpm db:generate`, and add `ENABLE ROW
 
 Domain test doubles (fake auth provider, in-memory repositories, fixed clock) live in `@flightmates/domain/testing`. Use them in unit tests; use real Postgres for repository integration tests.
 
-Per-environment Supabase settings: `docs/runbooks/supabase-auth.md`.
+Per-environment Supabase settings: `docs/runbooks/supabase-auth.md`. Error tracking (Sentry, EU region, optional `SENTRY_DSN`): `docs/runbooks/error-tracking.md`.
 
 Added by later tickets: `pnpm test:e2e`, `pnpm db:seed`.

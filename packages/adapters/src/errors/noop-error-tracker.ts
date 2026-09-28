@@ -1,6 +1,6 @@
 import type { ErrorTracker } from '@flightmates/domain';
 
-/** Placeholder until an error tracking service is chosen (F-06 part B). Sends nothing. */
+/** Used when SENTRY_DSN is unset (local development, tests). Errors are still logged. */
 export const noopErrorTracker: ErrorTracker = {
   capture: () => undefined,
 };

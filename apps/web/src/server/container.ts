@@ -1,5 +1,6 @@
 import {
   createJsonLogger,
+  createSentryErrorTracker,
   createSupabaseAuthProvider,
   noopAnalytics,
   noopErrorTracker,
@@ -26,7 +27,12 @@ export function accountDeps(): RouteDeps {
       clock: systemClock,
       analytics: noopAnalytics,
       logger: createJsonLogger(),
-      errorTracker: noopErrorTracker,
+      errorTracker: env.SENTRY_DSN
+        ? createSentryErrorTracker({
+            dsn: env.SENTRY_DSN,
+            environment: env.SENTRY_ENVIRONMENT ?? env.NODE_ENV,
+          })
+        : noopErrorTracker,
     };
   }
   return deps;

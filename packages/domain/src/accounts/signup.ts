@@ -1,5 +1,5 @@
 import type { Analytics } from '../ports/analytics';
-import type { AuthProvider } from '../ports/auth-provider';
+import type { AuthProvider, AuthSession } from '../ports/auth-provider';
 import type { Clock } from '../ports/clock';
 import type { UserAccount, UserRepository } from '../ports/user-repository';
 import { isAdult } from './age';
@@ -74,27 +74,31 @@ export async function signUp(
   return { status: 'verification_pending' };
 }
 
-/** Confirms the 6-digit code and marks the user verified (PRD 9.1, 10.1). */
+/**
+ * Confirms the 6-digit code, marks the user verified (PRD 9.1, 10.1) and returns a session,
+ * so the user is signed in straight after verifying.
+ */
 export async function verifyEmail(
   deps: AccountDeps,
   input: { email: string; code: string },
-): Promise<{ status: 'verified' }> {
+): Promise<{ status: 'verified'; session: AuthSession }> {
   const result = await deps.authProvider.verifyEmailCode(input);
   if (result.status === 'invalid_code') {
     throw new DomainError('INVALID_CODE', 'That code is wrong or has expired.');
   }
+  const { session } = result;
 
-  const account = await deps.users.findByAuthProviderId(result.providerUserId);
+  const account = await deps.users.findByAuthProviderId(session.providerUserId);
   if (!account) {
     // No app user for this login account (an undone signup). Same answer as a bad code.
     throw new DomainError('INVALID_CODE', 'That code is wrong or has expired.');
   }
 
   if (!account.emailVerifiedAt) {
-    await deps.users.markEmailVerified(result.providerUserId, deps.clock.now());
+    await deps.users.markEmailVerified(session.providerUserId, deps.clock.now());
     await deps.analytics.track({ name: 'email_verified', userId: account.id });
   }
-  return { status: 'verified' };
+  return { status: 'verified', session };
 }
 
 /** Sends a new code. Same response whether or not the email is registered (Q6). */

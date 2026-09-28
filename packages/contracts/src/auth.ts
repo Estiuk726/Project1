@@ -27,3 +27,32 @@ export const verificationPendingResponseSchema = z.object({
 });
 export const emailVerifiedResponseSchema = z.object({ status: z.literal('verified') });
 export const codeSentResponseSchema = z.object({ status: z.literal('code_sent') });
+
+export const loginRequestSchema = z.object({
+  email,
+  // Only a length cap here: password rules apply at signup, not login.
+  password: z.string().min(1).max(72),
+});
+export type LoginRequest = z.infer<typeof loginRequestSchema>;
+
+export const signedInResponseSchema = z.object({ status: z.literal('signed_in') });
+
+/** GET /api/v1/me: the caller's own account. Never returned for any other user. */
+export const meResponseSchema = z.object({
+  id: z.uuid(),
+  email: z.string(),
+  emailVerified: z.boolean(),
+  status: z.enum(['active', 'restricted', 'suspended', 'banned']),
+  profile: z.object({
+    displayName: z.string(),
+    photoKey: z.string().nullable(),
+    homeCountry: z.string().nullable(),
+    bio: z.string().nullable(),
+    languages: z.array(z.string()),
+    interests: z.array(z.string()),
+    showAge: z.boolean(),
+    showUniversity: z.boolean(),
+    requestPolicy: z.enum(['everyone', 'verified_only', 'nobody']),
+  }),
+});
+export type MeResponse = z.infer<typeof meResponseSchema>;

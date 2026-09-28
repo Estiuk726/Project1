@@ -114,9 +114,9 @@ describe('account signup and verification', () => {
 
   it('marks the user verified with the correct code', async () => {
     await signUp(deps, adult);
-    await expect(
-      verifyEmail(deps, { email: adult.email, code: FakeAuthProvider.CODE }),
-    ).resolves.toEqual({ status: 'verified' });
+    const result = await verifyEmail(deps, { email: adult.email, code: FakeAuthProvider.CODE });
+    expect(result.status).toBe('verified');
+    expect(result.session.providerUserId).toBe('auth-1');
 
     expect(users.users[0]?.emailVerifiedAt).toEqual(new Date('2026-09-28T10:00:00Z'));
     expect(analytics.events.map((e) => e.name)).toEqual(['signup_completed', 'email_verified']);

@@ -110,6 +110,7 @@ describe('auth API handlers', () => {
     );
     expect(res).toEqual({ status: 200, body: { status: 'verified' } });
     expect(users.users[0]?.emailVerifiedAt).not.toBeNull();
+    expect(authProvider.sessions).toHaveLength(1);
   });
 
   it('verify-email returns 400 INVALID_CODE for a wrong code', async () => {

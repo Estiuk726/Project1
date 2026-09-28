@@ -21,7 +21,15 @@ Authentication → Sign In / Providers → Email:
 - Minimum password length: **8** (matches `signupRequestSchema`)
 - Email OTP length: **6**
 
-## 3. Confirmation email sends the code, not a link
+## 3. Session lifetime
+
+Project Settings → JWT Keys (or Authentication → Sessions, depending on the dashboard version):
+
+- Access token (JWT) expiry: **600 seconds** (10 minutes). "Log out other devices" stops other devices from refreshing; their current access token keeps working until it expires, so this is the longest a revoked device stays signed in.
+- Refresh token rotation: **on**, with reuse detection.
+- The app keeps the refresh token cookie for 30 days and renews it on use (open question Q8).
+
+## 4. Confirmation email sends the code, not a link
 
 Authentication → Emails → Templates → **Confirm signup**. Replace the body so it shows the code:
 
@@ -34,10 +42,10 @@ Authentication → Emails → Templates → **Confirm signup**. Replace the body
 
 Do not include `{{ .ConfirmationURL }}`; the app verifies with `POST /api/v1/auth/verify-email`.
 
-## 4. Sending email
+## 5. Sending email
 
 The built-in Supabase mailer is rate limited and meant for testing. Before beta, set a custom SMTP provider (Authentication → Emails → SMTP Settings) with an EU region where possible, and add it to the processor list (PRD 11.1).
 
-## 5. Check
+## 6. Check
 
-Sign up with a real inbox on staging, receive a 6-digit code, verify it, and confirm `users.email_verified_at` is set.
+Sign up with a real inbox on staging, receive a 6-digit code, verify it, and confirm `users.email_verified_at` is set and `GET /api/v1/me` answers 200. Log in on a second browser, call "log out other devices" from the first, and confirm the second gets 401 within 10 minutes.

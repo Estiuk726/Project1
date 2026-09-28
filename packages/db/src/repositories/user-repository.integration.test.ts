@@ -126,4 +126,50 @@ describe.skipIf(!serverUrl)('user repository and signup (integration)', () => {
     const repo = createUserRepository(t.db);
     await expect(repo.markEmailVerified('nobody', new Date())).resolves.toBeNull();
   });
+
+  it('returns the account view only for live users', async () => {
+    const repo = createUserRepository(t.db);
+    await repo.createWithProfile({
+      authProviderId: 'view-1',
+      email: 'view@example.com',
+      dateOfBirth: '2000-01-01',
+      displayName: 'Viewer',
+    });
+    await expect(repo.getAccountView('view-1')).resolves.toEqual({
+      id: expect.any(String) as unknown,
+      email: 'view@example.com',
+      emailVerified: false,
+      status: 'active',
+      profile: {
+        displayName: 'Viewer',
+        photoKey: null,
+        homeCountry: null,
+        bio: null,
+        languages: [],
+        interests: [],
+        showAge: false,
+        showUniversity: false,
+        requestPolicy: 'everyone',
+      },
+    });
+
+    await t.db
+      .update(users)
+      .set({ deletedAt: new Date() })
+      .where(eq(users.authProviderId, 'view-1'));
+    await expect(repo.getAccountView('view-1')).resolves.toBeNull();
+    await expect(repo.getAccountView('nobody')).resolves.toBeNull();
+  });
+
+  it('never includes the date of birth in the account view', async () => {
+    const repo = createUserRepository(t.db);
+    await repo.createWithProfile({
+      authProviderId: 'view-2',
+      email: 'view2@example.com',
+      dateOfBirth: '1999-12-31',
+      displayName: 'Viewer',
+    });
+    const view = await repo.getAccountView('view-2');
+    expect(JSON.stringify(view)).not.toContain('1999-12-31');
+  });
 });

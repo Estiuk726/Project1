@@ -8,3 +8,4 @@ export {
   type AccountDeps,
   type SignUpInput,
 } from './signup';
+export { authenticate, signIn, signOut, signOutOtherDevices, type Authenticated } from './session';

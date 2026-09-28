@@ -20,7 +20,30 @@ const domainErrorStatus: Record<DomainErrorCode, number> = {
   UNDERAGE: 422,
   INVALID_CODE: 400,
   RATE_LIMITED: 429,
+  INVALID_CREDENTIALS: 401,
+  EMAIL_NOT_VERIFIED: 403,
+  UNAUTHENTICATED: 401,
 };
+
+/**
+ * Blocks cross-site requests to endpoints that act on the session cookie (CSRF).
+ * Session cookies are SameSite=Lax as a second layer.
+ */
+export function rejectCrossSite(request: Request): Response | null {
+  const forbidden = () =>
+    errorResponse(403, 'FORBIDDEN_ORIGIN', 'Requests from other sites are not allowed.');
+  if (request.headers.get('sec-fetch-site') === 'cross-site') return forbidden();
+  const origin = request.headers.get('origin');
+  // Non-browser clients send no Origin; SameSite=Lax cookies already cover browsers.
+  if (origin === null) return null;
+  let originHost: string;
+  try {
+    originHost = new URL(origin).host; // "null" (sandboxed pages) does not parse
+  } catch {
+    return forbidden();
+  }
+  return originHost === new URL(request.url).host ? null : forbidden();
+}
 
 /**
  * Parses a JSON body with a contract schema. On failure returns a 400 response that names

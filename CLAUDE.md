@@ -18,6 +18,7 @@ FlightMates connects people travelling on the same flight or journey, starting w
 - `packages/domain` must not import from `@flightmates/db`, `@flightmates/adapters`, `next` or `react` (enforced by lint).
 - Validate every request with schemas from `packages/contracts`. The same schemas generate the OpenAPI spec.
 - Authorize every protected resource on the server, including checks that the resource belongs to the caller or is visible to them.
+- Protected routes wrap their handler in `withSession` (`apps/web/src/server/session.ts`) and call `rejectCrossSite` first on anything that changes state. Session tokens live only in HTTP-only cookies, never in response bodies.
 - All endpoints live under `/api/v1` and use the standard error shape from PRD Section 16.
 - Multi-step state changes run in one DB transaction.
 - Timestamps are stored in UTC. Flight dates follow PRD Section 12.3 (local departure date at origin). Never derive a flight date from UTC.

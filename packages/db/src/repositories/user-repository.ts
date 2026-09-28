@@ -1,5 +1,10 @@
-import type { CreateUserResult, UserAccount, UserRepository } from '@flightmates/domain';
-import { eq, sql } from 'drizzle-orm';
+import type {
+  AccountView,
+  CreateUserResult,
+  UserAccount,
+  UserRepository,
+} from '@flightmates/domain';
+import { and, eq, isNull, sql } from 'drizzle-orm';
 import type { Database } from '../client';
 import { userProfiles, users } from '../schema';
 
@@ -61,6 +66,33 @@ export function createUserRepository(db: Database): UserRepository {
         .where(eq(users.authProviderId, authProviderId))
         .returning({ id: users.id, emailVerifiedAt: users.emailVerifiedAt });
       return row ?? null;
+    },
+
+    async getAccountView(authProviderId): Promise<AccountView | null> {
+      const [row] = await db
+        .select({
+          id: users.id,
+          email: users.email,
+          emailVerifiedAt: users.emailVerifiedAt,
+          status: users.status,
+          profile: {
+            displayName: userProfiles.displayName,
+            photoKey: userProfiles.photoKey,
+            homeCountry: userProfiles.homeCountry,
+            bio: userProfiles.bio,
+            languages: userProfiles.languages,
+            interests: userProfiles.interests,
+            showAge: userProfiles.showAge,
+            showUniversity: userProfiles.showUniversity,
+            requestPolicy: userProfiles.requestPolicy,
+          },
+        })
+        .from(users)
+        .innerJoin(userProfiles, eq(userProfiles.userId, users.id))
+        .where(and(eq(users.authProviderId, authProviderId), isNull(users.deletedAt)));
+      if (!row) return null;
+      const { emailVerifiedAt, ...rest } = row;
+      return { ...rest, emailVerified: emailVerifiedAt !== null };
     },
   };
 }

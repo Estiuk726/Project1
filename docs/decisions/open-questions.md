@@ -13,8 +13,10 @@ Questions where the PRD is ambiguous or silent. Add new ones at the bottom with 
 
 ## Answered
 
-| #   | Question                                | Answer                                    | Where recorded  |
-| --- | --------------------------------------- | ----------------------------------------- | --------------- |
-| —   | Launch market (D1)                      | South Asia ↔ Europe                       | PRD 5.1         |
-| —   | Wider matching default (D7)             | Merged into one trip visibility switch    | PRD 10.2        |
-| Q5  | Which ticket scaffolds the Next.js app? | F-02 (`apps/web`, Next.js 16, App Router) | BUILD_PLAN F-02 |
+| #   | Question                                                   | Answer                                                                     | Where recorded   |
+| --- | ---------------------------------------------------------- | -------------------------------------------------------------------------- | ---------------- |
+| —   | Launch market (D1)                                         | South Asia ↔ Europe                                                        | PRD 5.1          |
+| —   | Wider matching default (D7)                                | Merged into one trip visibility switch                                     | PRD 10.2         |
+| Q5  | Which ticket scaffolds the Next.js app?                    | F-02 (`apps/web`, Next.js 16, App Router)                                  | BUILD_PLAN F-02  |
+| Q6  | Signup with an already-registered email: reveal it or not? | Same response as a new signup ("check your email"); no account enumeration | F-05             |
+| Q7  | When does someone born on 29 February turn 18?             | 1 March in non-leap years                                                  | F-05 (`isAdult`) |

@@ -1,11 +1,13 @@
-import type { AccountDeps } from '@flightmates/domain';
 import {
   FakeAuthProvider,
   InMemoryUserRepository,
   RecordingAnalytics,
+  RecordingErrorTracker,
+  RecordingLogger,
   fixedClock,
 } from '@flightmates/domain/testing';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
+import type { RouteDeps } from '../http';
 import { handleResendCode, handleSignup, handleVerifyEmail } from './auth';
 
 function post(body: unknown): Request {
@@ -28,7 +30,7 @@ const signup = {
 };
 
 describe('auth API handlers', () => {
-  let deps: AccountDeps;
+  let deps: RouteDeps;
   let authProvider: FakeAuthProvider;
   let users: InMemoryUserRepository;
 
@@ -40,6 +42,8 @@ describe('auth API handlers', () => {
       users,
       analytics: new RecordingAnalytics(),
       clock: fixedClock('2026-09-28T10:00:00Z'),
+      logger: new RecordingLogger(),
+      errorTracker: new RecordingErrorTracker(),
     };
   });
 
@@ -139,7 +143,6 @@ describe('auth API handlers', () => {
   });
 
   it('returns 500 INTERNAL without internal details on unexpected errors', async () => {
-    const log = vi.spyOn(console, 'error').mockImplementation(() => undefined);
     users.failNextCreate = true;
     const response = await handleSignup(post(signup), deps);
     const text = await response.clone().text();
@@ -148,7 +151,34 @@ describe('auth API handlers', () => {
       body: { error: { code: 'INTERNAL' } },
     });
     expect(text).not.toContain('database unavailable');
-    expect(JSON.stringify(log.mock.calls)).not.toContain(signup.email);
-    log.mockRestore();
+
+    const requestId = response.headers.get('x-request-id');
+    expect(requestId).toMatch(/^[0-9a-f-]{36}$/);
+    const tracker = deps.errorTracker as RecordingErrorTracker;
+    expect(tracker.captured).toHaveLength(1);
+    expect(tracker.captured[0]?.context).toEqual({
+      requestId,
+      method: 'POST',
+      route: '/api/v1/auth',
+    });
+  });
+
+  it('logs every request with its id, route, status and domain error code', async () => {
+    const response = await handleSignup(post({ ...signup, dateOfBirth: '2010-01-01' }), deps);
+    const logger = deps.logger as RecordingLogger;
+    expect(logger.entries).toEqual([
+      {
+        level: 'info',
+        event: 'request.completed',
+        fields: {
+          requestId: response.headers.get('x-request-id'),
+          method: 'POST',
+          route: '/api/v1/auth',
+          status: 422,
+          errorCode: 'UNDERAGE',
+          durationMs: expect.any(Number) as number,
+        },
+      },
+    ]);
   });
 });

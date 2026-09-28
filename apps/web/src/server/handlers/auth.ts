@@ -12,14 +12,13 @@ import {
   signOut,
   signUp,
   verifyEmail,
-  type AccountDeps,
 } from '@flightmates/domain';
-import { handleErrors, json, parseBody, rejectCrossSite } from '../http';
+import { handleErrors, type RouteDeps, json, parseBody, rejectCrossSite } from '../http';
 import { clearSessionCookies, readSessionCookies, setSessionCookies } from '../session';
 
 /** POST /api/v1/auth/signup (PRD 9.1). 202: a code was sent if the email can sign up. */
-export function handleSignup(request: Request, deps: AccountDeps): Promise<Response> {
-  return handleErrors(async () => {
+export function handleSignup(request: Request, deps: RouteDeps): Promise<Response> {
+  return handleErrors(request, deps, async () => {
     const blocked = rejectCrossSite(request);
     if (blocked) return blocked;
     const body = await parseBody(request, signupRequestSchema);
@@ -29,8 +28,8 @@ export function handleSignup(request: Request, deps: AccountDeps): Promise<Respo
 }
 
 /** POST /api/v1/auth/verify-email. Also signs the user in. */
-export function handleVerifyEmail(request: Request, deps: AccountDeps): Promise<Response> {
-  return handleErrors(async () => {
+export function handleVerifyEmail(request: Request, deps: RouteDeps): Promise<Response> {
+  return handleErrors(request, deps, async () => {
     const blocked = rejectCrossSite(request);
     if (blocked) return blocked;
     const body = await parseBody(request, verifyEmailRequestSchema);
@@ -43,8 +42,8 @@ export function handleVerifyEmail(request: Request, deps: AccountDeps): Promise<
 }
 
 /** POST /api/v1/auth/resend-code */
-export function handleResendCode(request: Request, deps: AccountDeps): Promise<Response> {
-  return handleErrors(async () => {
+export function handleResendCode(request: Request, deps: RouteDeps): Promise<Response> {
+  return handleErrors(request, deps, async () => {
     const blocked = rejectCrossSite(request);
     if (blocked) return blocked;
     const body = await parseBody(request, resendCodeRequestSchema);
@@ -54,8 +53,8 @@ export function handleResendCode(request: Request, deps: AccountDeps): Promise<R
 }
 
 /** POST /api/v1/auth/login */
-export function handleLogin(request: Request, deps: AccountDeps): Promise<Response> {
-  return handleErrors(async () => {
+export function handleLogin(request: Request, deps: RouteDeps): Promise<Response> {
+  return handleErrors(request, deps, async () => {
     const blocked = rejectCrossSite(request);
     if (blocked) return blocked;
     const body = await parseBody(request, loginRequestSchema);
@@ -68,8 +67,8 @@ export function handleLogin(request: Request, deps: AccountDeps): Promise<Respon
 }
 
 /** POST /api/v1/auth/logout. Always clears the cookies, even without a valid session. */
-export function handleLogout(request: Request, deps: AccountDeps): Promise<Response> {
-  return handleErrors(async () => {
+export function handleLogout(request: Request, deps: RouteDeps): Promise<Response> {
+  return handleErrors(request, deps, async () => {
     const blocked = rejectCrossSite(request);
     if (blocked) return blocked;
     try {

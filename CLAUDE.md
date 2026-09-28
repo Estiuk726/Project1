@@ -34,7 +34,7 @@ FlightMates connects people travelling on the same flight or journey, starting w
 
 - Never return fields the PRD lists as hidden in Section 9.2: email, phone, DOB, surname, home city, unrelated flights, seat.
 - Every discovery, profile, request and message path must apply the block check in both directions and the filters in PRD Section 13.1.
-- Never log message bodies, emails, DOB, tokens, or flight details tied to a user. Log IDs.
+- Never log message bodies, emails, DOB, tokens, or flight details tied to a user. Log IDs. Log through the `Logger` port (`deps.logger`), never `console`; the JSON logger redacts sensitive keys and scrubs emails and tokens as a second layer. Route handlers run inside `handleErrors(request, deps, …)`, which adds `x-request-id`, logs each request and sends unexpected errors to the `ErrorTracker` port.
 - Never commit secrets. Use `.env.example` with placeholder values.
 - Every environment variable is declared in `packages/config/src/env.ts` (validated at server start) and listed in `.env.example`. Read it through `serverEnv()` in `apps/web/src/env.ts`, not `process.env`. Errors name variables, never values.
 - Strip EXIF from uploaded images.

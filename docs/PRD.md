@@ -723,7 +723,7 @@ Detailed tickets: `docs/BUILD_PLAN.md`.
 | --- | ------------------------------ | ------------------ | ---------------------------------------------------------------------------------- | -------------- |
 | D1  | Launch market                  | **Decided (v0.3)** | South Asia (BD, IN, PK, NP, LK) ↔ Europe (EU/EEA, UK, CH), any hub                 | Phase 5        |
 | D2  | Flight data provider           | Open               | Winner of the 12.1 evaluation                                                      | Phase 2        |
-| D3  | Auth provider                  | Open               | Managed provider with EU data option; Supabase Auth is the candidate               | Phase 1 (F-05) |
+| D3  | Auth provider                  | **Decided**        | Supabase Auth, same Frankfurt project, behind the `AuthProvider` port (ADR 0003)   | Phase 1 (F-05) |
 | D4  | Hosting and database region    | **Decided**        | Database: Supabase, Frankfurt (eu-central-1), see ADR 0002. App hosting still open | Phase 1 (F-03) |
 | D5  | Realtime service               | Open               | Managed realtime as signal only                                                    | Phase 3        |
 | D6  | Age shown by default           | Default            | Off                                                                                | Phase 2        |

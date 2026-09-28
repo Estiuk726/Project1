@@ -41,6 +41,9 @@ describe('server startup (instrumentation.register)', () => {
   it('starts when the environment is valid', () => {
     vi.stubEnv('NEXT_RUNTIME', 'nodejs');
     vi.stubEnv('DATABASE_URL', 'postgres://postgres@localhost:5432/flightmates');
+    vi.stubEnv('SUPABASE_URL', 'https://project.supabase.co');
+    vi.stubEnv('SUPABASE_ANON_KEY', 'anon-key');
+    vi.stubEnv('SUPABASE_SERVICE_ROLE_KEY', 'service-role-secret');
     const { exit } = mockExitAndLog();
 
     register();

@@ -12,6 +12,13 @@ export const serverEnvSchema = z.object({
     .refine((value) => /^postgres(ql)?:\/\/.+/.test(value), {
       error: 'must be a postgres:// or postgresql:// URL',
     }),
+  // Supabase Auth (ADR 0003). The service role key is a server-only secret.
+  SUPABASE_URL: z
+    .string({ error: 'is required' })
+    .min(1, { error: 'is required', abort: true })
+    .refine((value) => /^https?:\/\/.+/.test(value), { error: 'must be an http(s) URL' }),
+  SUPABASE_ANON_KEY: z.string({ error: 'is required' }).min(1, { error: 'is required' }),
+  SUPABASE_SERVICE_ROLE_KEY: z.string({ error: 'is required' }).min(1, { error: 'is required' }),
 });
 
 export type ServerEnv = z.infer<typeof serverEnvSchema>;

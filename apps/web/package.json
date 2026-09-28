@@ -10,10 +10,15 @@
     "typecheck": "next typegen && tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
+    "@flightmates/adapters": "workspace:*",
+    "@flightmates/config": "workspace:*",
+    "@flightmates/contracts": "workspace:*",
+    "@flightmates/db": "workspace:*",
+    "@flightmates/domain": "workspace:*",
     "next": "^16.3.6",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
-    "@flightmates/config": "workspace:*"
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@types/react": "^19.3.0",

@@ -11,5 +11,9 @@
   },
   "devDependencies": {
     "@flightmates/config": "workspace:*"
+  },
+  "dependencies": {
+    "@flightmates/domain": "workspace:*",
+    "@supabase/supabase-js": "^2.117.2"
   }
 }

@@ -95,4 +95,8 @@ Integration tests need `DATABASE_URL` pointing at a Postgres server where the us
 
 New tables: add them to `schema.ts`, run `pnpm db:generate`, and add `ENABLE ROW LEVEL SECURITY` for each new table in a migration (ADR 0002). A test fails if any public table lacks RLS.
 
+Domain test doubles (fake auth provider, in-memory repositories, fixed clock) live in `@flightmates/domain/testing`. Use them in unit tests; use real Postgres for repository integration tests.
+
+Per-environment Supabase settings: `docs/runbooks/supabase-auth.md`.
+
 Added by later tickets: `pnpm test:e2e`, `pnpm db:seed`.

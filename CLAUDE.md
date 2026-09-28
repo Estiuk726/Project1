@@ -35,6 +35,7 @@ FlightMates connects people travelling on the same flight or journey, starting w
 - Every discovery, profile, request and message path must apply the block check in both directions and the filters in PRD Section 13.1.
 - Never log message bodies, emails, DOB, tokens, or flight details tied to a user. Log IDs.
 - Never commit secrets. Use `.env.example` with placeholder values.
+- Every environment variable is declared in `packages/config/src/env.ts` (validated at server start) and listed in `.env.example`. Read it through `serverEnv()` in `apps/web/src/env.ts`, not `process.env`. Errors name variables, never values.
 - Strip EXIF from uploaded images.
 
 ## UI
@@ -83,8 +84,15 @@ pnpm format          Prettier write
 pnpm format:check    Prettier check (CI)
 pnpm test            Vitest: packages/*/src/**/*.test.ts and apps/*/src/**/*.test.{ts,tsx}
 pnpm build           Build every package that has a build step (Next.js app)
+pnpm db:generate     Generate a SQL migration from packages/db/src/schema.ts
+pnpm db:check        Check migration files are consistent
+pnpm db:migrate      Apply migrations to DATABASE_URL
 ```
 
-CI (`.github/workflows/ci.yml`) runs install, format:check, lint, typecheck, test and build on every PR.
+CI (`.github/workflows/ci.yml`) runs install, format:check, lint, typecheck, db:check, db:migrate on a clean Postgres 17, test and build on every PR.
 
-Added by later tickets: `pnpm test:e2e`, `pnpm db:migrate`, `pnpm db:seed`.
+Integration tests need `DATABASE_URL` pointing at a Postgres server where the user can create databases; each test file creates and drops its own database. Without `DATABASE_URL` they are skipped locally and fail in CI.
+
+New tables: add them to `schema.ts`, run `pnpm db:generate`, and add `ENABLE ROW LEVEL SECURITY` for each new table in a migration (ADR 0002). A test fails if any public table lacks RLS.
+
+Added by later tickets: `pnpm test:e2e`, `pnpm db:seed`.

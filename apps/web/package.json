@@ -12,10 +12,10 @@
   "dependencies": {
     "next": "^16.3.6",
     "react": "^19.3.0",
-    "react-dom": "^19.3.0"
+    "react-dom": "^19.3.0",
+    "@flightmates/config": "workspace:*"
   },
   "devDependencies": {
-    "@flightmates/config": "workspace:*",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0"
   }

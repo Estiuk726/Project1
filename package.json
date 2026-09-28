@@ -12,6 +12,9 @@
     "typecheck": "tsc --noEmit -p tsconfig.json && pnpm -r typecheck",
     "test": "vitest run",
     "build": "pnpm -r --if-present build",
+    "db:generate": "pnpm --filter @flightmates/db db:generate",
+    "db:check": "pnpm --filter @flightmates/db db:check",
+    "db:migrate": "pnpm --filter @flightmates/db db:migrate",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },

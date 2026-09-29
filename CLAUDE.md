@@ -96,8 +96,10 @@ Integration tests need `DATABASE_URL` pointing at a Postgres server where the us
 
 New tables: add them to `schema.ts`, run `pnpm db:generate`, and add `ENABLE ROW LEVEL SECURITY` for each new table in a migration (ADR 0002). A test fails if any public table lacks RLS.
 
+Supabase agent skills (`.claude/skills/supabase*`, installed with `npx skills add supabase/agent-skills`, pinned in `skills-lock.json`) are vendored reference material. Where they differ from this file, this file wins: schema changes go through `packages/db/src/schema.ts` and `pnpm db:generate` (Drizzle), never `supabase db pull`, `apply_migration` or SQL run directly on a hosted database. The Supabase MCP server (`.mcp.json`) is for reading docs, logs and advisors; do not use it to change a hosted database.
+
 Domain test doubles (fake auth provider, in-memory repositories, fixed clock) live in `@flightmates/domain/testing`. Use them in unit tests; use real Postgres for repository integration tests.
 
-Per-environment Supabase settings: `docs/runbooks/supabase-auth.md`. Error tracking (Sentry, EU region, optional `SENTRY_DSN`): `docs/runbooks/error-tracking.md`.
+Per-environment Supabase settings: `docs/runbooks/supabase-auth.md`. Error tracking (Sentry, EU region, optional `SENTRY_DSN`): `docs/runbooks/error-tracking.md`. Staging (Vercel `fra1`, deployed by `.github/workflows/deploy-staging.yml` after CI on `main`): `docs/runbooks/staging.md`; `pnpm smoke:auth <url> [--signup <email>]` checks a deployment.
 
 Added by later tickets: `pnpm test:e2e`, `pnpm db:seed`.

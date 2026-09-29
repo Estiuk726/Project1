@@ -1,0 +1,93 @@
+name: Deploy staging
+
+# Runs after CI passes on main (ADR 0005). Applies migrations to the staging database,
+# deploys to the staging Vercel project (Frankfurt), then smoke-tests the deployment.
+# Until the staging secrets exist it skips with a notice: docs/runbooks/staging.md.
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-staging
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Migrate, deploy and smoke-test staging
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: staging
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - name: Check staging secrets
+        id: secrets
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          STAGING_DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
+        run: |
+          missing=""
+          for name in VERCEL_TOKEN VERCEL_ORG_ID VERCEL_PROJECT_ID STAGING_DATABASE_URL; do
+            if [ -z "${!name}" ]; then missing="$missing $name"; fi
+          done
+          if [ -n "$missing" ]; then
+            echo "::notice::Staging not configured, skipping deploy. Missing secrets:$missing (see docs/runbooks/staging.md)"
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v7
+        if: steps.secrets.outputs.ready == 'true'
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      - uses: pnpm/action-setup@v6
+        if: steps.secrets.outputs.ready == 'true'
+
+      - uses: actions/setup-node@v7
+        if: steps.secrets.outputs.ready == 'true'
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install
+        if: steps.secrets.outputs.ready == 'true'
+        run: pnpm install --frozen-lockfile
+
+      # Session pooler URL (port 5432): the transaction pooler does not support migrations.
+      - name: Apply migrations to the staging database
+        if: steps.secrets.outputs.ready == 'true'
+        env:
+          DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
+        run: pnpm db:migrate
+
+      - name: Build with the staging project settings
+        if: steps.secrets.outputs.ready == 'true'
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          pnpm dlx vercel@60.1.3 pull --yes --environment=production --token="$VERCEL_TOKEN"
+          pnpm dlx vercel@60.1.3 build --prod --token="$VERCEL_TOKEN"
+
+      - name: Deploy
+        id: deploy
+        if: steps.secrets.outputs.ready == 'true'
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          url=$(pnpm dlx vercel@60.1.3 deploy --prebuilt --prod --token="$VERCEL_TOKEN")
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "Deployed $url"
+
+      - name: Smoke test
+        if: steps.secrets.outputs.ready == 'true'
+        run: pnpm smoke:auth "${{ vars.STAGING_URL || steps.deploy.outputs.url }}"

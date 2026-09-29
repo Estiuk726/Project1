@@ -22,6 +22,6 @@ PRD 14.1 asks for an error tracking service next to structured JSON logs. CLAUDE
 
 - Sentry becomes a processor for the PRD 11.1 list, with EU storage. It holds no personal data by design.
 - Issues show the error type and stack, not the message. To see what happened, look up the `request_id` tag in the logs, which have their own redaction.
-- On serverless hosting, events are sent in the background and could be lost if the function is frozen first. When hosting is chosen (F-07), add a flush at the end of the request if needed.
+- On serverless hosting a function can be frozen as soon as it responds, so the 500 path awaits `ErrorTracker.flush` (at most 2 seconds) before returning (ADR 0005).
 - Tests check the actual envelope sent through a fake fetch, including an error whose message and cause contain an email and a message body.
 - Replacing Sentry means a new `ErrorTracker` adapter and nothing else.

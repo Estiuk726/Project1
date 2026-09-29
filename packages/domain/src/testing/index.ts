@@ -59,8 +59,13 @@ export class RecordingLogger implements Logger {
 
 export class RecordingErrorTracker implements ErrorTracker {
   readonly captured: { error: unknown; context: ErrorContext }[] = [];
+  flushes = 0;
   capture(error: unknown, context: ErrorContext): void {
     this.captured.push({ error, context });
+  }
+  flush(): Promise<void> {
+    this.flushes += 1;
+    return Promise.resolve();
   }
 }
 

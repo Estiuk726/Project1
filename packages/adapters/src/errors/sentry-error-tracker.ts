@@ -158,5 +158,8 @@ export function createSentryErrorTracker(config: SentryErrorTrackerConfig): Erro
       });
       client.captureException(error, { originalException: error }, scope);
     },
+    async flush(timeoutMs: number): Promise<void> {
+      await client.flush(timeoutMs);
+    },
   };
 }

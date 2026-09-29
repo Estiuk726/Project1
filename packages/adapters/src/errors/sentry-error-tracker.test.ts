@@ -32,10 +32,8 @@ describe('createSentryErrorTracker', () => {
     const cause = new Error('Key (email)=(tahmid@example.com) already exists');
     const error = new TypeError('failed for tahmid@example.com: "See you at gate B7"', { cause });
     tracker.capture(error, { requestId: 'req-1', method: 'POST', route: '/api/v1/auth/signup' });
-
-    await vi.waitFor(() => {
-      expect(sentry.requests).toHaveLength(1);
-    });
+    await tracker.flush(2000);
+    expect(sentry.requests).toHaveLength(1);
     const request = sentry.requests[0];
     expect(request?.url).toMatch(/^https:\/\/o4501\.ingest\.de\.sentry\.io\/api\/4502\/envelope\//);
     expect(request?.body).not.toContain('tahmid@example.com');

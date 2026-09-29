@@ -719,19 +719,19 @@ Detailed tickets: `docs/BUILD_PLAN.md`.
 
 ## 22. Founder decisions
 
-| #   | Decision                       | Status             | Answer or proposed default                                                         | Needed before  |
-| --- | ------------------------------ | ------------------ | ---------------------------------------------------------------------------------- | -------------- |
-| D1  | Launch market                  | **Decided (v0.3)** | South Asia (BD, IN, PK, NP, LK) ↔ Europe (EU/EEA, UK, CH), any hub                 | Phase 5        |
-| D2  | Flight data provider           | Open               | Winner of the 12.1 evaluation                                                      | Phase 2        |
-| D3  | Auth provider                  | **Decided**        | Supabase Auth, same Frankfurt project, behind the `AuthProvider` port (ADR 0003)   | Phase 1 (F-05) |
-| D4  | Hosting and database region    | **Decided**        | Database: Supabase, Frankfurt (eu-central-1), see ADR 0002. App hosting still open | Phase 1 (F-03) |
-| D5  | Realtime service               | Open               | Managed realtime as signal only                                                    | Phase 3        |
-| D6  | Age shown by default           | Default            | Off                                                                                | Phase 2        |
-| D7  | Wider matching default         | **Decided (v0.3)** | Merged into the single trip visibility switch, default on                          | Phase 3        |
-| D8  | Moderation rota and hours      | Open               | Founder plus one person, 24h target, coverage per 10.5                             | Phase 5        |
-| D9  | Legal reviewer                 | Open               | Named before real user data                                                        | Phase 0        |
-| D10 | Monetization timing            | Default            | None before the first origin country passes the density gate                       | Phase 7        |
-| D11 | First origin countries to open | Open               | The two that reach 200 beta users first                                            | Phase 5        |
+| #   | Decision                       | Status             | Answer or proposed default                                                                      | Needed before        |
+| --- | ------------------------------ | ------------------ | ----------------------------------------------------------------------------------------------- | -------------------- |
+| D1  | Launch market                  | **Decided (v0.3)** | South Asia (BD, IN, PK, NP, LK) ↔ Europe (EU/EEA, UK, CH), any hub                              | Phase 5              |
+| D2  | Flight data provider           | Open               | Winner of the 12.1 evaluation                                                                   | Phase 2              |
+| D3  | Auth provider                  | **Decided**        | Supabase Auth, same Frankfurt project, behind the `AuthProvider` port (ADR 0003)                | Phase 1 (F-05)       |
+| D4  | Hosting and database region    | **Decided**        | Database: Supabase, Frankfurt (ADR 0002). App: Vercel, functions in Frankfurt `fra1` (ADR 0005) | Phase 1 (F-03, F-07) |
+| D5  | Realtime service               | Open               | Managed realtime as signal only                                                                 | Phase 3              |
+| D6  | Age shown by default           | Default            | Off                                                                                             | Phase 2              |
+| D7  | Wider matching default         | **Decided (v0.3)** | Merged into the single trip visibility switch, default on                                       | Phase 3              |
+| D8  | Moderation rota and hours      | Open               | Founder plus one person, 24h target, coverage per 10.5                                          | Phase 5              |
+| D9  | Legal reviewer                 | Open               | Named before real user data                                                                     | Phase 0              |
+| D10 | Monetization timing            | Default            | None before the first origin country passes the density gate                                    | Phase 7              |
+| D11 | First origin countries to open | Open               | The two that reach 200 beta users first                                                         | Phase 5              |
 
 ---
 

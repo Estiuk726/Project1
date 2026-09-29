@@ -16,7 +16,8 @@
     "db:check": "pnpm --filter @flightmates/db db:check",
     "db:migrate": "pnpm --filter @flightmates/db db:migrate",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "smoke:auth": "pnpm --filter @flightmates/web smoke:auth"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

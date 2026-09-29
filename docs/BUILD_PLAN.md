@@ -39,7 +39,7 @@ Claude Code can draft P0-3, P0-4 and P0-5. Ask it to list assumptions at the top
 | F-05  | ✅     | Auth provider integration behind `AuthProvider` port; signup with DOB and 18+ check; email verification by 6-digit code and resend | Under-18 signup rejected (test); unverified user flagged  |
 | F-05b | ✅     | Login, logout, session cookies, `GET /api/v1/me`, "log out other devices" (PRD 9.1)                                                | Session survives reload; revoked sessions rejected (test) |
 | F-06  | ✅     | Error shape, request validation middleware, structured logger that redacts sensitive fields, error tracking                        | Test: logs contain no email or message body               |
-| F-07  | ⬜     | Staging deployment in EU region                                                                                                    | Staging URL works end to end with auth                    |
+| F-07  | 🟡     | Staging deployment in EU region                                                                                                    | Staging URL works end to end with auth                    |
 
 ---
 

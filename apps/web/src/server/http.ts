@@ -18,6 +18,9 @@ export type RouteDeps = AccountDeps & Observability;
 
 export const REQUEST_ID_HEADER = 'x-request-id';
 
+/** Upper bound added to a 500 response while the error report is sent. */
+const ERROR_FLUSH_TIMEOUT_MS = 2000;
+
 export function json(body: unknown, status = 200): Response {
   return Response.json(body, { status });
 }
@@ -120,6 +123,7 @@ export async function handleErrors(
       deps.logger.error('request.failed', { requestId, method, route, error });
       try {
         deps.errorTracker.capture(error, { requestId, method, route });
+        await deps.errorTracker.flush(ERROR_FLUSH_TIMEOUT_MS);
       } catch {
         // Error tracking must never change the response.
       }

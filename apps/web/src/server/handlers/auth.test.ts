@@ -156,6 +156,7 @@ describe('auth API handlers', () => {
     expect(requestId).toMatch(/^[0-9a-f-]{36}$/);
     const tracker = deps.errorTracker as RecordingErrorTracker;
     expect(tracker.captured).toHaveLength(1);
+    expect(tracker.flushes).toBe(1);
     expect(tracker.captured[0]?.context).toEqual({
       requestId,
       method: 'POST',

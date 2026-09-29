@@ -1,12 +1,19 @@
-import { createSupabaseAuthProvider, noopAnalytics } from '@flightmates/adapters';
+import {
+  createJsonLogger,
+  createSentryErrorTracker,
+  createSupabaseAuthProvider,
+  noopAnalytics,
+  noopErrorTracker,
+} from '@flightmates/adapters';
 import { createDatabase, createUserRepository } from '@flightmates/db';
-import { systemClock, type AccountDeps } from '@flightmates/domain';
+import { systemClock } from '@flightmates/domain';
 import { serverEnv } from '../env';
+import type { RouteDeps } from './http';
 
-let deps: AccountDeps | undefined;
+let deps: RouteDeps | undefined;
 
 /** Composition root: wires domain services to real adapters. Server only. */
-export function accountDeps(): AccountDeps {
+export function accountDeps(): RouteDeps {
   if (!deps) {
     const env = serverEnv();
     const { db } = createDatabase(env.DATABASE_URL);
@@ -19,6 +26,13 @@ export function accountDeps(): AccountDeps {
       users: createUserRepository(db),
       clock: systemClock,
       analytics: noopAnalytics,
+      logger: createJsonLogger(),
+      errorTracker: env.SENTRY_DSN
+        ? createSentryErrorTracker({
+            dsn: env.SENTRY_DSN,
+            environment: env.SENTRY_ENVIRONMENT ?? env.NODE_ENV,
+          })
+        : noopErrorTracker,
     };
   }
   return deps;

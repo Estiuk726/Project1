@@ -11,6 +11,8 @@ import type {
   VerifyEmailCodeResult,
 } from '../ports/auth-provider';
 import type { Clock } from '../ports/clock';
+import type { ErrorContext, ErrorTracker } from '../ports/error-tracker';
+import type { LogFields, Logger, LogLevel } from '../ports/logger';
 import type {
   AccountView,
   CreateUserResult,
@@ -29,6 +31,36 @@ export class RecordingAnalytics implements Analytics {
   track(event: AnalyticsEvent): Promise<void> {
     this.events.push(event);
     return Promise.resolve();
+  }
+}
+
+export interface LogEntry {
+  level: LogLevel;
+  event: string;
+  fields: LogFields;
+}
+
+/** Keeps log calls in memory. Does not redact: use the JSON logger to test redaction. */
+export class RecordingLogger implements Logger {
+  readonly entries: LogEntry[] = [];
+  debug(event: string, fields: LogFields = {}): void {
+    this.entries.push({ level: 'debug', event, fields });
+  }
+  info(event: string, fields: LogFields = {}): void {
+    this.entries.push({ level: 'info', event, fields });
+  }
+  warn(event: string, fields: LogFields = {}): void {
+    this.entries.push({ level: 'warn', event, fields });
+  }
+  error(event: string, fields: LogFields = {}): void {
+    this.entries.push({ level: 'error', event, fields });
+  }
+}
+
+export class RecordingErrorTracker implements ErrorTracker {
+  readonly captured: { error: unknown; context: ErrorContext }[] = [];
+  capture(error: unknown, context: ErrorContext): void {
+    this.captured.push({ error, context });
   }
 }
 

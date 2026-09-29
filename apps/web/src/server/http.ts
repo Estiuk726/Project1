@@ -1,6 +1,22 @@
 import type { ErrorResponse, FieldProblem } from '@flightmates/contracts';
-import { DomainError, type DomainErrorCode } from '@flightmates/domain';
+import {
+  DomainError,
+  type AccountDeps,
+  type DomainErrorCode,
+  type ErrorTracker,
+  type Logger,
+} from '@flightmates/domain';
 import type { z } from 'zod';
+
+export interface Observability {
+  logger: Logger;
+  errorTracker: ErrorTracker;
+}
+
+/** Everything a route handler needs: domain services plus logging and error tracking. */
+export type RouteDeps = AccountDeps & Observability;
+
+export const REQUEST_ID_HEADER = 'x-request-id';
 
 export function json(body: unknown, status = 200): Response {
   return Response.json(body, { status });
@@ -76,19 +92,48 @@ export async function parseBody<Schema extends z.ZodType>(
   return { ok: true, data: result.data };
 }
 
-/** Maps expected domain failures to 4xx; anything else is a 500 with no internal detail. */
-export async function handleErrors(run: () => Promise<Response>): Promise<Response> {
+/**
+ * Runs a route handler. Expected domain failures become 4xx; anything else is logged, sent
+ * to error tracking and answered with a 500 that carries no internal detail. Every response
+ * gets a request ID so a user report can be matched to the logs.
+ */
+export async function handleErrors(
+  request: Request,
+  deps: Observability,
+  run: () => Promise<Response>,
+): Promise<Response> {
+  const started = performance.now();
+  const requestId = crypto.randomUUID();
+  const method = request.method;
+  // Path only: query strings can carry flight numbers and dates.
+  const route = new URL(request.url).pathname;
+  let errorCode: string | undefined;
+  let response: Response;
   try {
-    return await run();
+    response = await run();
   } catch (error) {
     if (error instanceof DomainError) {
-      return errorResponse(domainErrorStatus[error.code], error.code, error.message);
+      errorCode = error.code;
+      response = errorResponse(domainErrorStatus[error.code], error.code, error.message);
+    } else {
+      errorCode = 'INTERNAL';
+      deps.logger.error('request.failed', { requestId, method, route, error });
+      try {
+        deps.errorTracker.capture(error, { requestId, method, route });
+      } catch {
+        // Error tracking must never change the response.
+      }
+      response = errorResponse(500, 'INTERNAL', 'Something went wrong. Please try again.');
     }
-    // Structured logging with redaction arrives in F-06. Log the error type only.
-    console.error(
-      'Unhandled error in API route',
-      error instanceof Error ? error.name : typeof error,
-    );
-    return errorResponse(500, 'INTERNAL', 'Something went wrong. Please try again.');
   }
+  response.headers.set(REQUEST_ID_HEADER, requestId);
+  deps.logger.info('request.completed', {
+    requestId,
+    method,
+    route,
+    status: response.status,
+    ...(errorCode ? { errorCode } : {}),
+    durationMs: Math.round(performance.now() - started),
+  });
+  return response;
 }

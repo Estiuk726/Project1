@@ -76,4 +76,37 @@ describe('parseServerEnv', () => {
     expect(error.problems).toEqual(['SUPABASE_URL must be an http(s) URL']);
     expect(error.message).not.toContain('secret-host');
   });
+
+  describe('error tracking', () => {
+    const base = { DATABASE_URL: validUrl, ...supabase };
+    const dsn = 'https://publickey123@o4501.ingest.de.sentry.io/4502';
+
+    it('is optional, and an empty value means unset', () => {
+      const env = parseServerEnv({ ...base, SENTRY_DSN: '', SENTRY_ENVIRONMENT: '' });
+      expect(env.SENTRY_DSN).toBeUndefined();
+      expect(env.SENTRY_ENVIRONMENT).toBeUndefined();
+    });
+
+    it('accepts an EU-region DSN and an environment name', () => {
+      const env = parseServerEnv({ ...base, SENTRY_DSN: dsn, SENTRY_ENVIRONMENT: 'staging' });
+      expect(env).toMatchObject({ SENTRY_DSN: dsn, SENTRY_ENVIRONMENT: 'staging' });
+    });
+
+    it('rejects a DSN outside the EU region without echoing it', () => {
+      const usDsn = 'https://publickey123@o4501.ingest.us.sentry.io/4502';
+      const error = captureError(() => parseServerEnv({ ...base, SENTRY_DSN: usDsn }));
+      expect(error.problems).toEqual([
+        'SENTRY_DSN must be a Sentry DSN in the EU region (https://…@….de.sentry.io/<project>)',
+      ]);
+      expect(error.message).not.toContain('publickey123');
+    });
+
+    it('rejects an environment name with spaces or capitals', () => {
+      const error = captureError(() =>
+        parseServerEnv({ ...base, SENTRY_ENVIRONMENT: 'My Staging' }),
+      );
+      expect(error.problems).toHaveLength(1);
+      expect(error.problems[0]).toMatch(/^SENTRY_ENVIRONMENT /);
+    });
+  });
 });

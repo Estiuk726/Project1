@@ -1,11 +1,13 @@
-import type { AccountDeps } from '@flightmates/domain';
 import {
   FakeAuthProvider,
   InMemoryUserRepository,
   RecordingAnalytics,
+  RecordingErrorTracker,
+  RecordingLogger,
   fixedClock,
 } from '@flightmates/domain/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
+import type { RouteDeps } from '../http';
 import { ACCESS_COOKIE, REFRESH_COOKIE } from '../session';
 import { handleLogin, handleLogout, handleSignup, handleVerifyEmail } from './auth';
 import { handleGetMe, handleRevokeOtherSessions } from './me';
@@ -55,7 +57,7 @@ const tahmid = {
 const sadia = { ...tahmid, firstName: 'Sadia', email: 'sadia@example.com' };
 
 describe('session flow over HTTP', () => {
-  let deps: AccountDeps;
+  let deps: RouteDeps;
   let authProvider: FakeAuthProvider;
   let users: InMemoryUserRepository;
 
@@ -67,6 +69,8 @@ describe('session flow over HTTP', () => {
       users,
       analytics: new RecordingAnalytics(),
       clock: fixedClock('2026-09-28T10:00:00Z'),
+      logger: new RecordingLogger(),
+      errorTracker: new RecordingErrorTracker(),
     };
   });
 
